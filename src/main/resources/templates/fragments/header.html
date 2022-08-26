@@ -12,7 +12,7 @@
       Добро пожаловать
       <b sec:authentication="principal.username"></b>
       с ролью
-      <b sec:authentication="principal.authorities"></b>
+      <a th:text="${#strings.substring(#authentication.getAuthorities(), 1, #strings.length(#authentication.getAuthorities())-1)}"></a>
     </p>
     <div sec:authorize = "hasRole('ROLE_ADMIN')">
       <a href="/admin">В админку</a>

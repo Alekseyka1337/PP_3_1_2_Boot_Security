@@ -42,11 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
                 .formLogin().successHandler(successUserHandler)
-                .usernameParameter("email")
-                .passwordParameter("password")
                 .permitAll()
                 .and()
-                .logout().logoutSuccessUrl("/")
-                .permitAll();
+                .logout().logoutSuccessUrl("/").permitAll();
     }
 }
