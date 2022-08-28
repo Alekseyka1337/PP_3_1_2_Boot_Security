@@ -57,25 +57,11 @@ public class UserController {
     @PostMapping(value = "/admin/save")
     public String createUser(Model model, @ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         model.addAttribute("listRoles", userService.getListRoles());
-        if (userService.findUserByEmail(user.getEmail()) != null) {
-            bindingResult.rejectValue("email", "error.user", "Аккаунт с данным email уже существует");
-        }
-        if (bindingResult.hasErrors()) {
-            return "createUser";
-        }
-        userService.saveOrUpdateUser(user);
-        return "redirect:/admin";
+        return userService.saveUser(user, bindingResult);
     }
     @PatchMapping("/admin/update")
     public String updateUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
         model.addAttribute("listRoles", userService.getListRoles());
-        if (userService.findUserByEmail(user.getEmail()) != null && !userService.findUserByEmail(user.getEmail()).getId().equals(user.getId())) {
-            bindingResult.rejectValue("email", "error.user", "Аккаунт с данным email уже существует");
-        }
-        if (bindingResult.hasErrors()) {
-            return "updateUser";
-        }
-        userService.saveOrUpdateUser(user);
-        return "redirect:/admin";
+        return userService.updateUser(user, bindingResult);
     }
 }

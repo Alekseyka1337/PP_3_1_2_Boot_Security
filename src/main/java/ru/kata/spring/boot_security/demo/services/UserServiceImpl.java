@@ -8,13 +8,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.List;
-
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -42,8 +42,27 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void saveOrUpdateUser(User user) {
+    public String saveUser(User user, BindingResult bindingResult) {
+        if (findUserByEmail(user.getEmail()) != null && !findUserByEmail(user.getEmail()).getId().equals(user.getId())) {
+            bindingResult.rejectValue("email", "error.user", "Аккаунт с данным email уже существует");
+        }
+        if (bindingResult.hasErrors()) {
+            return "createUser";
+        }
         userRepository.save(passwordCoder(user));
+        return "redirect:/admin";
+    }
+    @Transactional
+    @Override
+    public String updateUser(User user, BindingResult bindingResult) {
+        if (findUserByEmail(user.getEmail()) != null && !findUserByEmail(user.getEmail()).getId().equals(user.getId())) {
+            bindingResult.rejectValue("email", "error.user", "Аккаунт с данным email уже существует");
+        }
+        if (bindingResult.hasErrors()) {
+            return "updateUser";
+        }
+        userRepository.save(passwordCoder(user));
+        return "redirect:/admin";
     }
 
     @Override
